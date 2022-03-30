@@ -33,9 +33,8 @@ namespace eunji
             }
         }
 
-
-        [CommandMethod("DIVVERT")]
-        public void DIVVERT()
+        [CommandMethod("DV")]
+        public void DV()
         {
             Document acDoc = Application.DocumentManager.MdiActiveDocument;
             Database acCurDb = acDoc.Database;
@@ -75,7 +74,11 @@ namespace eunji
             PromptStringOptions pStrOpts = new PromptStringOptions("\nEnter the area you want: ");
             pStrOpts.AllowSpaces = false;
             double targetArea = double.Parse(acDoc.Editor.GetString(pStrOpts).StringResult) * 1000000;
-
+            if (targetArea > targetPL.Area)
+            {
+                Application.ShowAlertDialog("Target Area is larger than selected Polyline's area!");
+                return;
+            }
             if (pickedPoint.Y < tempY)
             {
                 while (true)
@@ -96,7 +99,6 @@ namespace eunji
                     tempPLRegionArea = tempPLRegion.Area;
                     if (Math.Abs(tempPLRegionArea - targetArea) < 100)
                     {
-                        tempPL.Dispose();
                         break;
                     }
                     else if (tempPLRegionArea > targetArea)
@@ -109,7 +111,6 @@ namespace eunji
                         lowerbound = tempY;
                         tempY = (tempY + upperbound) / 2;
                     }
-                    tempPL.Dispose();
                 }
             }
             else if (pickedPoint.Y > tempY)
@@ -132,7 +133,6 @@ namespace eunji
                     tempPLRegionArea = tempPLRegion.Area;
                     if (Math.Abs(tempPLRegionArea - targetArea) < 10)
                     {
-                        tempPL.Dispose();
                         break;
                     }
                     else if (tempPLRegionArea > targetArea)
@@ -145,7 +145,6 @@ namespace eunji
                         upperbound = tempY;
                         tempY = (tempY + lowerbound) / 2;
                     }
-                    tempPL.Dispose();
                 }
             }
             else
@@ -172,8 +171,8 @@ namespace eunji
             }
         }
 
-        [CommandMethod("DIVHORIZ")]
-        public void DIVHORIZ()
+        [CommandMethod("DH")]
+        public void DH()
         {
             Document acDoc = Application.DocumentManager.MdiActiveDocument;
             Database acCurDb = acDoc.Database;
@@ -213,7 +212,11 @@ namespace eunji
             PromptStringOptions pStrOpts = new PromptStringOptions("\nEnter the area you want: ");
             pStrOpts.AllowSpaces = false;
             double targetArea = double.Parse(acDoc.Editor.GetString(pStrOpts).StringResult) * 1000000;
-
+            if(targetArea>targetPL.Area)
+            {
+                Application.ShowAlertDialog("Target Area is larger than selected Polyline's area!");
+                return;
+            }
             if (pickedPoint.X < tempX)
             {
                 while (true)
@@ -234,7 +237,6 @@ namespace eunji
                     tempPLRegionArea = tempPLRegion.Area;
                     if (Math.Abs(tempPLRegionArea - targetArea) < 10)
                     {
-                        tempPL.Dispose();
                         break;
                     }
                     else if (tempPLRegionArea > targetArea)
@@ -247,7 +249,6 @@ namespace eunji
                         leftbound = tempX;
                         tempX = (tempX + rightbound) / 2;
                     }
-                    tempPL.Dispose();
                 }
             }
             else if (pickedPoint.X > tempX)
@@ -270,7 +271,6 @@ namespace eunji
                     tempPLRegionArea = tempPLRegion.Area;
                     if (Math.Abs(tempPLRegionArea - targetArea) < 10000)
                     {
-                        tempPL.Dispose();
                         break;
                     }
                     else if (tempPLRegionArea > targetArea)
@@ -283,7 +283,6 @@ namespace eunji
                         rightbound = tempX;
                         tempX = (tempX + leftbound) / 2;
                     }
-                    tempPL.Dispose();
                 }
             }
             else
