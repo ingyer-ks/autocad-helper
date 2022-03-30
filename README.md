@@ -12,6 +12,8 @@
 4. 원하는 면적을 m^2 단위로 입력합니다.
 5. 영역을 구분하는 선이 나타납니다.
 
+## 버전
+DLL 파일은 AutoCAD 2020 버전을 대상으로 만들어졌습니다. 사용하시는 버전에 맞게 ObjectARX SDK를 적용하셔서 빌드하시면 됩니다.
 ## 기타 사항
 제 여자친구인 장은지 님의 불편사항을 해소하기 위해 만들었습니다.
 
@@ -28,5 +30,7 @@ At this moment, you can divide a polygon into two area vertically or horizontall
 4. Enter desired area in m^2 dimension.
 5. Now you can see the division.
 
+## Version
+The DLL file targets AutoCAD 2020. If you use 
 ## Miscellaneous
 This is dedicated to Jang Eunji who is my girlfriend.
