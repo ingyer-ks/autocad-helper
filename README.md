@@ -8,7 +8,7 @@
 ## 사용 방법
 1. bin/Debug 안의 eunji.dll을 다운로드합니다.
 2. NETLOAD로 eunji.dll을 로드합니다.
-3. 상하 두 영역으로 분할하고 싶다면 DIVVERT, 좌우 두 영역으로 분할하고 싶다면 DIVHORIZ 명령어를 사용합니다.
+3. 상하 두 영역으로 분할하고 싶다면 DV, 좌우 두 영역으로 분할하고 싶다면 DH 명령어를 사용합니다.
 4. 분할할 Polyline을 선택합니다.
 5. 원하는 면적을 m^2 단위로 입력합니다.
 6. 영역을 구분하는 선이 나타납니다.
@@ -27,7 +27,7 @@ At this moment, you can divide a polygon into two area vertically or horizontall
 ## How to Use
 1. Download eunji.dll from bin/Debug directory.
 2. Load eunji.dll by NETLOAD.
-3. If you want to divde vertically(upper/lower area) use DIVVERT, and if you want to divide horizontally(left/right area) use DIVHORIZ.
+3. If you want to divde vertically(upper/lower area) use command DV, and if you want to divide horizontally(left/right area) use command DH.
 4. Select the Polyline you want to divide.
 5. Enter desired area in m^2 dimension.
 6. Now you can see the division.
