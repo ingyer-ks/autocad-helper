@@ -1,0 +1,12 @@
+C:\Users\USER\source\repos\eunji\bin\Debug\eunji.dll
+C:\Users\USER\source\repos\eunji\bin\Debug\eunji.pdb
+C:\Users\USER\source\repos\eunji\obj\Debug\eunji.csproj.AssemblyReference.cache
+C:\Users\USER\source\repos\eunji\obj\Debug\eunji.csproj.CoreCompileInputs.cache
+C:\Users\USER\source\repos\eunji\obj\Debug\eunji.dll
+C:\Users\USER\source\repos\eunji\obj\Debug\eunji.pdb
+E:\repos\autocad\obj\Debug\eunji.csproj.AssemblyReference.cache
+E:\repos\autocad\obj\Debug\eunji.csproj.CoreCompileInputs.cache
+E:\repos\autocad\obj\Debug\eunji.dll
+E:\repos\autocad\obj\Debug\eunji.pdb
+E:\repos\autocad\bin\Debug\eunji.dll
+E:\repos\autocad\bin\Debug\eunji.pdb
