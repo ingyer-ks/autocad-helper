@@ -31,6 +31,6 @@ At this moment, you can divide a polygon into two area vertically or horizontall
 5. Now you can see the division.
 
 ## Version
-The DLL file targets AutoCAD 2020. If you use 
+The DLL file targets AutoCAD 2020. If you use other version, you need corresponding ObjectARX SDK.
 ## Miscellaneous
 This is dedicated to Jang Eunji who is my girlfriend.
