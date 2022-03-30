@@ -94,7 +94,7 @@ namespace eunji
                     Region tempPLRegion = tempPLRegionColl[0] as Region;
                     tempPLRegion.BooleanOperation(BooleanOperationType.BoolIntersect, (Region)targetPLRegion.Clone());
                     tempPLRegionArea = tempPLRegion.Area;
-                    if (Math.Abs(tempPLRegionArea - targetArea) < 10000)
+                    if (Math.Abs(tempPLRegionArea - targetArea) < 100)
                     {
                         tempPL.Dispose();
                         break;
@@ -130,7 +130,7 @@ namespace eunji
                     Region tempPLRegion = tempPLRegionColl[0] as Region;
                     tempPLRegion.BooleanOperation(BooleanOperationType.BoolIntersect, (Region)targetPLRegion.Clone());
                     tempPLRegionArea = tempPLRegion.Area;
-                    if (Math.Abs(tempPLRegionArea - targetArea) < 10000)
+                    if (Math.Abs(tempPLRegionArea - targetArea) < 10)
                     {
                         tempPL.Dispose();
                         break;
@@ -232,7 +232,7 @@ namespace eunji
                     Region tempPLRegion = tempPLRegionColl[0] as Region;
                     tempPLRegion.BooleanOperation(BooleanOperationType.BoolIntersect, (Region)targetPLRegion.Clone());
                     tempPLRegionArea = tempPLRegion.Area;
-                    if (Math.Abs(tempPLRegionArea - targetArea) < 10000)
+                    if (Math.Abs(tempPLRegionArea - targetArea) < 10)
                     {
                         tempPL.Dispose();
                         break;
