@@ -18,6 +18,9 @@ DLL 파일은 AutoCAD 2020 버전을 대상으로 만들어졌습니다. 사용�
 ## 기타 사항
 제 여자친구인 장은지 님의 불편사항을 해소하기 위해 만들었습니다.
 
+## 라이센스
+이 레포지토리는 MIT 라이센스를 따릅니다. 상업적 이용, 수정, 배포, 개인적 이용이 가능하나, 라이센스 및 저작권을 고지하여야 합니다. 또한 이 레포지토리를 사용함으로 인해 발생하는 문제에 대해서 책임을 지지 않으며 어떠한 보증 또한 없습니다.
+
 ## Background
 This repository stores C# codes which provides additional functions on Autocad.
 
@@ -36,3 +39,6 @@ At this moment, you can divide a polygon into two area vertically or horizontall
 The DLL file targets AutoCAD 2020. If you use other version, you need corresponding ObjectARX SDK.
 ## Miscellaneous
 This is dedicated to Jang Eunji who is my girlfriend.
+
+## License
+This repository is licensed under the terms of the MIT license.
