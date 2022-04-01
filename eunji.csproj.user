@@ -6,4 +6,10 @@
     <StartArguments>/nologo</StartArguments>
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <StartProgram>C:\Program Files\Autodesk\AutoCAD 2017\acad.exe</StartProgram>
+    <StartArguments>/nologo</StartArguments>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
 </Project>
