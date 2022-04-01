@@ -319,54 +319,94 @@ namespace eunji
 
             using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
             {
-                var options = new PromptEntityOptions("\nSelect first line: ");
+                var options = new PromptEntityOptions("\nSelect first line or arc: ");
                 options.SetRejectMessage("\nSelected object is invalid.");
                 options.AddAllowedClass(typeof(Line), true);
+                options.AddAllowedClass(typeof(Arc), true);
                 var result = acEd.GetEntity(options);
-                Line firstline = new Line();
-                Line secondline = new Line();
                 if (result.Status != PromptStatus.OK)
                 {
-                    Application.ShowAlertDialog("Please select a line.");
+                    Application.ShowAlertDialog("Please select a line or arc.");
                     return;
-                }
-                else
-                {
-                    firstline = (Line)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
-                }
-                options = new PromptEntityOptions("\nSelect second line: ");
-                options.SetRejectMessage("\nSelected object is invalid.");
-                options.AddAllowedClass(typeof(Line), true);
-                result = acEd.GetEntity(options);
-                if (result.Status != PromptStatus.OK)
-                {
-                    Application.ShowAlertDialog("Please select another line.");
-                    return;
-                }
-                else
-                {
-                    secondline = (Line)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
                 }
 
-                Vector2d firstlineDirVec = new Vector2d(Math.Abs(firstline.EndPoint.X - firstline.StartPoint.X) < 0.0001 ? 0 : firstline.EndPoint.X - firstline.StartPoint.X, Math.Abs(firstline.EndPoint.Y - firstline.StartPoint.Y) < 0.0001 ? 0 : firstline.EndPoint.Y - firstline.StartPoint.Y);
-                Vector2d secondlineDirVec = new Vector2d(Math.Abs(secondline.EndPoint.X - secondline.StartPoint.X) < 0.0001 ? 0 : secondline.EndPoint.X - secondline.StartPoint.X, Math.Abs(secondline.EndPoint.Y - secondline.StartPoint.Y) < 0.0001 ? 0 : secondline.EndPoint.Y - secondline.StartPoint.Y);
-                if (!firstlineDirVec.IsParallelTo(secondlineDirVec))
+                if (result.GetType() == typeof(Line))
                 {
-                    Application.ShowAlertDialog("The lines are not parallel!");
-                    return;
+                    Line firstline = (Line)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
+                    Line secondline = new Line();
+                    options = new PromptEntityOptions("\nSelect second line: ");
+                    options.SetRejectMessage("\nSelected object is invalid.");
+                    options.AddAllowedClass(typeof(Line), true);
+                    result = acEd.GetEntity(options);
+                    if (result.Status != PromptStatus.OK)
+                    {
+                        Application.ShowAlertDialog("Please select another line.");
+                        return;
+                    }
+                    else
+                    {
+                        secondline = (Line)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
+                    }
+
+                    Vector2d firstlineDirVec = new Vector2d(Math.Abs(firstline.EndPoint.X - firstline.StartPoint.X) < 0.0001 ? 0 : firstline.EndPoint.X - firstline.StartPoint.X, Math.Abs(firstline.EndPoint.Y - firstline.StartPoint.Y) < 0.0001 ? 0 : firstline.EndPoint.Y - firstline.StartPoint.Y);
+                    Vector2d secondlineDirVec = new Vector2d(Math.Abs(secondline.EndPoint.X - secondline.StartPoint.X) < 0.0001 ? 0 : secondline.EndPoint.X - secondline.StartPoint.X, Math.Abs(secondline.EndPoint.Y - secondline.StartPoint.Y) < 0.0001 ? 0 : secondline.EndPoint.Y - secondline.StartPoint.Y);
+                    if (!firstlineDirVec.IsParallelTo(secondlineDirVec))
+                    {
+                        Application.ShowAlertDialog("The lines are not parallel!");
+                        return;
+                    }
+                    BlockTable acBlkTbl;
+                    acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId,
+                                                    OpenMode.ForRead) as BlockTable;
+                    BlockTableRecord acBlkTblRec;
+                    acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
+                                                    OpenMode.ForWrite) as BlockTableRecord;
+                    Xline middleline = new Xline();
+                    middleline.BasePoint = new Point3d((firstline.EndPoint.X + secondline.EndPoint.X) / 2, (firstline.EndPoint.Y + secondline.EndPoint.Y) / 2, 0);
+                    middleline.UnitDir = new Vector3d(Math.Abs(firstline.EndPoint.X - firstline.StartPoint.X) < 0.0001 ? 0 : firstline.EndPoint.X - firstline.StartPoint.X, Math.Abs(firstline.EndPoint.Y - firstline.StartPoint.Y) < 0.0001 ? 0 : firstline.EndPoint.Y - firstline.StartPoint.Y, 0);
+                    acBlkTblRec.AppendEntity(middleline);
+                    acTrans.AddNewlyCreatedDBObject(middleline, true);
+                    acTrans.Commit();
                 }
-                BlockTable acBlkTbl;
-                acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId,
-                                                OpenMode.ForRead) as BlockTable;
-                BlockTableRecord acBlkTblRec;
-                acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
-                                                OpenMode.ForWrite) as BlockTableRecord;
-                Xline middleline = new Xline();
-                middleline.BasePoint = new Point3d((firstline.EndPoint.X + secondline.EndPoint.X) / 2, (firstline.EndPoint.Y + secondline.EndPoint.Y) / 2, 0);
-                middleline.UnitDir = new Vector3d(Math.Abs(firstline.EndPoint.X - firstline.StartPoint.X) < 0.0001 ? 0 : firstline.EndPoint.X - firstline.StartPoint.X, Math.Abs(firstline.EndPoint.Y - firstline.StartPoint.Y) < 0.0001 ? 0 : firstline.EndPoint.Y - firstline.StartPoint.Y, 0);
-                acBlkTblRec.AppendEntity(middleline);
-                acTrans.AddNewlyCreatedDBObject(middleline, true);
-                acTrans.Commit();
+                else
+                {
+                    Arc firstarc = (Arc)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
+                    Arc secondarc = new Arc();
+                    options = new PromptEntityOptions("\nSelect second arc: ");
+                    options.SetRejectMessage("\nSelected object is invalid.");
+                    options.AddAllowedClass(typeof(Arc), true);
+                    result = acEd.GetEntity(options);
+                    if (result.Status != PromptStatus.OK)
+                    {
+                        Application.ShowAlertDialog("Please select another arc.");
+                        return;
+                    }
+                    else
+                    {
+                        secondarc = (Arc)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
+                    }
+
+                    if (!firstarc.Center.IsEqualTo(secondarc.Center))
+                    {
+                        Application.ShowAlertDialog("The centers are not same!");
+                        return;
+                    }
+                    BlockTable acBlkTbl;
+                    acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId,
+                                                    OpenMode.ForRead) as BlockTable;
+                    BlockTableRecord acBlkTblRec;
+                    acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
+                                                    OpenMode.ForWrite) as BlockTableRecord;
+
+                    Arc middlearc = new Arc();
+                    middlearc.Center = firstarc.Center;
+                    middlearc.Radius = (firstarc.Radius + secondarc.Radius) / 2;
+                    middlearc.StartAngle = firstarc.StartAngle < secondarc.StartAngle ? firstarc.StartAngle : secondarc.StartAngle;
+                    middlearc.EndAngle = firstarc.EndAngle > secondarc.EndAngle ? firstarc.EndAngle : secondarc.EndAngle;
+                    acBlkTblRec.AppendEntity(middlearc);
+                    acTrans.AddNewlyCreatedDBObject(middlearc, true);
+                    acTrans.Commit();
+                }
             }
         }
     }
