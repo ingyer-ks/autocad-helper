@@ -320,17 +320,15 @@ namespace eunji
             using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
             {
                 var options = new PromptEntityOptions("\nSelect first line or arc: ");
-                options.SetRejectMessage("\nSelected object is invalid.");
-                options.AddAllowedClass(typeof(Line), true);
-                options.AddAllowedClass(typeof(Arc), true);
                 var result = acEd.GetEntity(options);
-                if (result.Status != PromptStatus.OK)
+                var type= acTrans.GetObject(result.ObjectId, OpenMode.ForRead).GetType().Name;
+                if ((type !="Arc" & type != "Line"))
                 {
                     Application.ShowAlertDialog("Please select a line or arc.");
                     return;
                 }
 
-                if (result.GetType() == typeof(Line))
+                if (type == "Line")
                 {
                     Line firstline = (Line)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
                     Line secondline = new Line();
