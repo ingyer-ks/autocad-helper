@@ -319,7 +319,7 @@ namespace eunji
 
             using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
             {
-                var options = new PromptEntityOptions("\nSelect inner line: ");
+                var options = new PromptEntityOptions("\nSelect first line: ");
                 options.SetRejectMessage("\nSelected object is invalid.");
                 options.AddAllowedClass(typeof(Line), true);
                 var result = acEd.GetEntity(options);
@@ -334,7 +334,7 @@ namespace eunji
                 {
                     innerline = (Line)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
                 }
-                options = new PromptEntityOptions("\nSelect outer line: ");
+                options = new PromptEntityOptions("\nSelect second line: ");
                 options.SetRejectMessage("\nSelected object is invalid.");
                 options.AddAllowedClass(typeof(Line), true);
                 result = acEd.GetEntity(options);
@@ -350,23 +350,48 @@ namespace eunji
 
                 Vector2d innerlineDirVec = new Vector2d(innerline.EndPoint.X - innerline.StartPoint.X, innerline.EndPoint.Y - innerline.StartPoint.Y);
                 Vector2d outerlineDirVec = new Vector2d(outerline.EndPoint.X - outerline.StartPoint.X, outerline.EndPoint.Y - outerline.StartPoint.Y);
-                if(!innerlineDirVec.IsParallelTo(outerlineDirVec))
+                if (!innerlineDirVec.IsParallelTo(outerlineDirVec))
                 {
                     Application.ShowAlertDialog("The lines are not parallel!");
                     return;
                 }
-                double offset = Math.Abs((innerline.EndPoint.X * innerline.StartPoint.Y - innerline.StartPoint.X * innerline.EndPoint.Y) / Math.Sqrt(Math.Pow(innerline.EndPoint.Y - innerline.StartPoint.Y, 2) + Math.Pow(innerline.StartPoint.X - innerline.EndPoint.X, 2)) - (outerline.EndPoint.X * outerline.StartPoint.Y - outerline.StartPoint.X * outerline.EndPoint.Y) / Math.Sqrt(Math.Pow(outerline.EndPoint.Y - outerline.StartPoint.Y, 2) + Math.Pow(outerline.StartPoint.X - outerline.EndPoint.X, 2)))/2;
+                double offset = Math.Abs((innerline.EndPoint.X * innerline.StartPoint.Y - innerline.StartPoint.X * innerline.EndPoint.Y) / Math.Sqrt(Math.Pow(innerline.EndPoint.Y - innerline.StartPoint.Y, 2) + Math.Pow(innerline.StartPoint.X - innerline.EndPoint.X, 2)) - (outerline.EndPoint.X * outerline.StartPoint.Y - outerline.StartPoint.X * outerline.EndPoint.Y) / Math.Sqrt(Math.Pow(outerline.EndPoint.Y - outerline.StartPoint.Y, 2) + Math.Pow(outerline.StartPoint.X - outerline.EndPoint.X, 2))) / 2;
                 BlockTable acBlkTbl;
                 acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId,
                                                 OpenMode.ForRead) as BlockTable;
                 BlockTableRecord acBlkTblRec;
                 acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
                                                 OpenMode.ForWrite) as BlockTableRecord;
-                DBObjectCollection acDbObjColl=innerline.GetOffsetCurves(offset);
-                foreach(Line acEnt in acDbObjColl)
+                DBObjectCollection acDbObjColl = innerline.GetOffsetCurves(offset);
+                foreach (Line acEnt in acDbObjColl)
                 {
                     acBlkTblRec.AppendEntity(acEnt);
                     acTrans.AddNewlyCreatedDBObject(acEnt, true);
+                }
+                acDbObjColl = innerline.GetOffsetCurves(-offset);
+                foreach (Line acEnt in acDbObjColl)
+                {
+                    acBlkTblRec.AppendEntity(acEnt);
+                    acTrans.AddNewlyCreatedDBObject(acEnt, true);
+                }
+                acTrans.Commit();
+            }
+            using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
+            {
+                var options = new PromptEntityOptions("\nSelect false line: ");
+                options.SetRejectMessage("\nSelected object is invalid.");
+                options.AddAllowedClass(typeof(Line), true);
+                var result = acEd.GetEntity(options);
+                Line targetline=new Line();
+                if (result.Status != PromptStatus.OK)
+                {
+                    Application.ShowAlertDialog("Please select correct line.");
+                    return;
+                }
+                else
+                {
+                    targetline=(Line)acTrans.GetObject(result.ObjectId, OpenMode.ForWrite);
+                    targetline.Erase(true);
                 }
                 acTrans.Commit();
             }

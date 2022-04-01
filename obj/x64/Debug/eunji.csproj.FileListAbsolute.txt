@@ -1,6 +1,6 @@
-E:\repos\autocad\bin\x64\Debug\eunji.dll
-E:\repos\autocad\bin\x64\Debug\eunji.pdb
-E:\repos\autocad\obj\x64\Debug\eunji.csproj.AssemblyReference.cache
-E:\repos\autocad\obj\x64\Debug\eunji.csproj.CoreCompileInputs.cache
-E:\repos\autocad\obj\x64\Debug\eunji.dll
-E:\repos\autocad\obj\x64\Debug\eunji.pdb
+C:\Users\ingye\Documents\repos\autocad\bin\x64\Debug\eunji.dll
+C:\Users\ingye\Documents\repos\autocad\bin\x64\Debug\eunji.pdb
+C:\Users\ingye\Documents\repos\autocad\obj\x64\Debug\eunji.csproj.AssemblyReference.cache
+C:\Users\ingye\Documents\repos\autocad\obj\x64\Debug\eunji.csproj.CoreCompileInputs.cache
+C:\Users\ingye\Documents\repos\autocad\obj\x64\Debug\eunji.dll
+C:\Users\ingye\Documents\repos\autocad\obj\x64\Debug\eunji.pdb
