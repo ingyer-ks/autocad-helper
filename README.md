@@ -18,10 +18,10 @@
 4. 영역을 구분하는 선이 나타납니다.
 
 * 중간선 그리기
-1. MDL 명령어를 입력합니다.
+1. CCX 명령어를 입력합니다.
 2. 안쪽 선을 선택합니다.
 3. 바깥쪽 선을 선택합니다.
-4. 안쪽 선과 바깥쪽 선의 거리의 절반만큼의 오프셋을 갖는 선이 안쪽 선 기준으로 생깁니다.
+4. 안쪽 선과 바깥쪽 선의 가운데를 지나는 Xline이 만들어집니다.
 
 ## 버전
 DLL 파일은 AutoCAD 2020 버전을 대상으로 만들어졌습니다. 사용하시는 버전에 맞게 ObjectARX SDK를 적용하셔서 빌드하시면 됩니다.
@@ -51,10 +51,10 @@ This repository implements these functions:
 4. Now you can see the division.
 
 * Drawing a line at the middle of two parallel lines
-1. Use MDL command.
+1. Use CCX command.
 2. Select the inner line.
 3. Select the outer line.
-4. A new line with offset to the inner line of which value is a half of the distance of the two lines apperas.
+4. A new Xline which passes through the middle point of both lines.
 ## Version
 The DLL file targets AutoCAD 2020. If you use other version, you need corresponding ObjectARX SDK.
 ## Miscellaneous

@@ -212,7 +212,7 @@ namespace eunji
             PromptStringOptions pStrOpts = new PromptStringOptions("\nEnter the area you want: ");
             pStrOpts.AllowSpaces = false;
             double targetArea = double.Parse(acDoc.Editor.GetString(pStrOpts).StringResult) * 1000000;
-            if(targetArea>targetPL.Area)
+            if (targetArea > targetPL.Area)
             {
                 Application.ShowAlertDialog("Target Area is larger than selected Polyline's area!");
                 return;
@@ -310,8 +310,8 @@ namespace eunji
         }
 
 
-        [CommandMethod("MDL")]
-        public void MDL()
+        [CommandMethod("CCX")]
+        public void CCX()
         {
             Document acDoc = Application.DocumentManager.MdiActiveDocument;
             Database acCurDb = acDoc.Database;
@@ -323,8 +323,8 @@ namespace eunji
                 options.SetRejectMessage("\nSelected object is invalid.");
                 options.AddAllowedClass(typeof(Line), true);
                 var result = acEd.GetEntity(options);
-                Line innerline = new Line();
-                Line outerline = new Line();
+                Line firstline = new Line();
+                Line secondline = new Line();
                 if (result.Status != PromptStatus.OK)
                 {
                     Application.ShowAlertDialog("Please select a line.");
@@ -332,7 +332,7 @@ namespace eunji
                 }
                 else
                 {
-                    innerline = (Line)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
+                    firstline = (Line)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
                 }
                 options = new PromptEntityOptions("\nSelect second line: ");
                 options.SetRejectMessage("\nSelected object is invalid.");
@@ -345,57 +345,29 @@ namespace eunji
                 }
                 else
                 {
-                    outerline = (Line)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
+                    secondline = (Line)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
                 }
 
-                Vector2d innerlineDirVec = new Vector2d(innerline.EndPoint.X - innerline.StartPoint.X, innerline.EndPoint.Y - innerline.StartPoint.Y);
-                Vector2d outerlineDirVec = new Vector2d(outerline.EndPoint.X - outerline.StartPoint.X, outerline.EndPoint.Y - outerline.StartPoint.Y);
-                if (!innerlineDirVec.IsParallelTo(outerlineDirVec))
+                Vector2d firstlineDirVec = new Vector2d(Math.Abs(firstline.EndPoint.X - firstline.StartPoint.X) < 0.0001 ? 0 : firstline.EndPoint.X - firstline.StartPoint.X, Math.Abs(firstline.EndPoint.Y - firstline.StartPoint.Y) < 0.0001 ? 0 : firstline.EndPoint.Y - firstline.StartPoint.Y);
+                Vector2d secondlineDirVec = new Vector2d(Math.Abs(secondline.EndPoint.X - secondline.StartPoint.X) < 0.0001 ? 0 : secondline.EndPoint.X - secondline.StartPoint.X, Math.Abs(secondline.EndPoint.Y - secondline.StartPoint.Y) < 0.0001 ? 0 : secondline.EndPoint.Y - secondline.StartPoint.Y);
+                if (!firstlineDirVec.IsParallelTo(secondlineDirVec))
                 {
                     Application.ShowAlertDialog("The lines are not parallel!");
                     return;
                 }
-                double offset = Math.Abs((innerline.EndPoint.X * innerline.StartPoint.Y - innerline.StartPoint.X * innerline.EndPoint.Y) / Math.Sqrt(Math.Pow(innerline.EndPoint.Y - innerline.StartPoint.Y, 2) + Math.Pow(innerline.StartPoint.X - innerline.EndPoint.X, 2)) - (outerline.EndPoint.X * outerline.StartPoint.Y - outerline.StartPoint.X * outerline.EndPoint.Y) / Math.Sqrt(Math.Pow(outerline.EndPoint.Y - outerline.StartPoint.Y, 2) + Math.Pow(outerline.StartPoint.X - outerline.EndPoint.X, 2))) / 2;
                 BlockTable acBlkTbl;
                 acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId,
                                                 OpenMode.ForRead) as BlockTable;
                 BlockTableRecord acBlkTblRec;
                 acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
                                                 OpenMode.ForWrite) as BlockTableRecord;
-                DBObjectCollection acDbObjColl = innerline.GetOffsetCurves(offset);
-                foreach (Line acEnt in acDbObjColl)
-                {
-                    acBlkTblRec.AppendEntity(acEnt);
-                    acTrans.AddNewlyCreatedDBObject(acEnt, true);
-                }
-                acDbObjColl = innerline.GetOffsetCurves(-offset);
-                foreach (Line acEnt in acDbObjColl)
-                {
-                    acBlkTblRec.AppendEntity(acEnt);
-                    acTrans.AddNewlyCreatedDBObject(acEnt, true);
-                }
+                Xline middleline = new Xline();
+                middleline.BasePoint = new Point3d((firstline.EndPoint.X + secondline.EndPoint.X) / 2, (firstline.EndPoint.Y + secondline.EndPoint.Y) / 2, 0);
+                middleline.UnitDir = new Vector3d(Math.Abs(firstline.EndPoint.X - firstline.StartPoint.X) < 0.0001 ? 0 : firstline.EndPoint.X - firstline.StartPoint.X, Math.Abs(firstline.EndPoint.Y - firstline.StartPoint.Y) < 0.0001 ? 0 : firstline.EndPoint.Y - firstline.StartPoint.Y, 0);
+                acBlkTblRec.AppendEntity(middleline);
+                acTrans.AddNewlyCreatedDBObject(middleline, true);
                 acTrans.Commit();
             }
-            using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
-            {
-                var options = new PromptEntityOptions("\nSelect false line: ");
-                options.SetRejectMessage("\nSelected object is invalid.");
-                options.AddAllowedClass(typeof(Line), true);
-                var result = acEd.GetEntity(options);
-                Line targetline=new Line();
-                if (result.Status != PromptStatus.OK)
-                {
-                    Application.ShowAlertDialog("Please select correct line.");
-                    return;
-                }
-                else
-                {
-                    targetline=(Line)acTrans.GetObject(result.ObjectId, OpenMode.ForWrite);
-                    targetline.Erase(true);
-                }
-                acTrans.Commit();
-            }
-            
         }
     }
 }
