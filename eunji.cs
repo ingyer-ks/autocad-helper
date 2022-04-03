@@ -321,8 +321,8 @@ namespace eunji
             {
                 var options = new PromptEntityOptions("\nSelect first line or arc: ");
                 var result = acEd.GetEntity(options);
-                var type= acTrans.GetObject(result.ObjectId, OpenMode.ForRead).GetType().Name;
-                if ((type !="Arc" & type != "Line"))
+                var type = acTrans.GetObject(result.ObjectId, OpenMode.ForRead).GetType().Name;
+                if ((type != "Arc" & type != "Line"))
                 {
                     Application.ShowAlertDialog("Please select a line or arc.");
                     return;
@@ -407,5 +407,52 @@ namespace eunji
                 }
             }
         }
+
+        [CommandMethod("DDD")]
+        public void DDD()
+        {
+            Document acDoc = Application.DocumentManager.MdiActiveDocument;
+            Database acCurDb = acDoc.Database;
+            Editor acEd = acDoc.Editor;
+
+            using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
+            {
+                var options = new PromptEntityOptions("\nSelect first line or arc: ");
+                var result = acEd.GetEntity(options);
+                var type = acTrans.GetObject(result.ObjectId, OpenMode.ForRead).GetType().Name;
+                if ((type != "Arc" & type != "Line"))
+                {
+                    Application.ShowAlertDialog("Please select a line or arc.");
+                    return;
+                }
+
+                if (type == "Line")
+                {
+                    Line firstline = (Line)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
+                    Line secondline = new Line();
+                    options = new PromptEntityOptions("\nSelect second line: ");
+                    options.SetRejectMessage("\nSelected object is invalid.");
+                    options.AddAllowedClass(typeof(Line), true);
+                    result = acEd.GetEntity(options);
+                    if (result.Status != PromptStatus.OK)
+                    {
+                        Application.ShowAlertDialog("Please select another line.");
+                        return;
+                    }
+                    else
+                    {
+                        secondline = (Line)acTrans.GetObject(result.ObjectId, OpenMode.ForRead);
+                    }
+
+                    Vector2d firstlineDirVec = new Vector2d(Math.Abs(firstline.EndPoint.X - firstline.StartPoint.X) < 0.0001 ? 0 : firstline.EndPoint.X - firstline.StartPoint.X, Math.Abs(firstline.EndPoint.Y - firstline.StartPoint.Y) < 0.0001 ? 0 : firstline.EndPoint.Y - firstline.StartPoint.Y);
+                    Vector2d secondlineDirVec = new Vector2d(Math.Abs(secondline.EndPoint.X - secondline.StartPoint.X) < 0.0001 ? 0 : secondline.EndPoint.X - secondline.StartPoint.X, Math.Abs(secondline.EndPoint.Y - secondline.StartPoint.Y) < 0.0001 ? 0 : secondline.EndPoint.Y - secondline.StartPoint.Y);
+
+                    double distance = Math.Abs((firstline.EndPoint.X * firstline.StartPoint.Y - firstline.StartPoint.X * firstline.EndPoint.Y) / Math.Sqrt(Math.Pow(firstline.EndPoint.Y - firstline.StartPoint.Y, 2) + Math.Pow(firstline.StartPoint.X - firstline.EndPoint.X, 2)) - (firstlineDirVec.IsCodirectionalTo(secondlineDirVec) ? 1 : (-1)) * (secondline.EndPoint.X * secondline.StartPoint.Y - secondline.StartPoint.X * secondline.EndPoint.Y) / Math.Sqrt(Math.Pow(secondline.EndPoint.Y - secondline.StartPoint.Y, 2) + Math.Pow(secondline.StartPoint.X - secondline.EndPoint.X, 2)));
+                    Application.ShowAlertDialog("Distance: " + distance.ToString());
+                    return;
+                }
+            }
+        }
     }
 }
+
